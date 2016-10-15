@@ -1,0 +1,36 @@
+version: 2
+
+services:
+
+  db:
+    image: postgres:9.6.0
+    environment:
+      - POSTGRES_PASSWORD=pg_password
+      - POSTGRES_USER=pg_user
+      - POSTGRES_DB=controk
+
+  webservice:
+    build: ./webservice/
+    command: bash -c "python manage.py runserver 8000"
+    environment:
+      - DATABASE_URL=postgres://pg_user:pg_password@db/controk
+    links:
+      - db
+
+  socket:
+    build: ./socket/
+    command: bash -c "node index.js"
+    environment:
+      - DATABASE_URL=postgres://pg_user:pg_password@db/controk
+    links:
+      - db
+
+  frontend-web:
+    build: ./frontend_web/
+    command: bash -c "gulp"
+    environment:
+      - SOCKET_HOST=socket
+      - WEBSERVICE_HOST=webservice
+    links:
+      - webservice
+      - socket
