@@ -46,7 +46,7 @@ services:
 
   frontend-web:
     container_name: frontend-web
-    build: ./frontend_web/
+    build: ./frontend-web/
     command: gulp
     ports:
       - "3000:3000"
