@@ -13,14 +13,24 @@ services:
   webservice:
     container_name: webservice
     build: ./webservice/
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:80"
     environment:
       - ALLOWED_HOSTS=localhost,127.0.0.1
       - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
+    links:
+      - db
+
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     ports:
       - "8000:8000"
     links:
-      - db
+      - webservice
+
 
   socket:
     container_name: socket
