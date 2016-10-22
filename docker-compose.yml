@@ -1,36 +1,49 @@
-version: 2
+version: "2"
 
 services:
 
   db:
+    container_name: db
     image: postgres:9.6.0
     environment:
-      - POSTGRES_PASSWORD=pg_password
-      - POSTGRES_USER=pg_user
-      - POSTGRES_DB=controk
+      - POSTGRES_PASSWORD=controk_user_password
+      - POSTGRES_USER=controk_user
+      - POSTGRES_DB=controk_db
 
   webservice:
+    container_name: webservice
     build: ./webservice/
-    command: bash -c "python manage.py runserver 8000"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
-      - DATABASE_URL=postgres://pg_user:pg_password@db/controk
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
+    ports:
+      - "8000:8000"
     links:
       - db
 
   socket:
+    container_name: socket
     build: ./socket/
-    command: bash -c "node index.js"
+    command: node index.js
     environment:
-      - DATABASE_URL=postgres://pg_user:pg_password@db/controk
+      - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
+      - PORT=8888
+    ports:
+      - "8888:8888"
     links:
       - db
 
   frontend-web:
+    container_name: frontend-web
     build: ./frontend_web/
-    command: bash -c "gulp"
+    command: gulp
+    ports:
+      - "3000:3000"
     environment:
-      - SOCKET_HOST=socket
-      - WEBSERVICE_HOST=webservice
+      - SOCKET_URL=http://localhost:8888/socket.io/socket.io.js
+      - API_URL=http://localhost:8000/api/v1/
+      - PORT=3000
     links:
       - webservice
       - socket
