@@ -15,7 +15,7 @@ services:
     build: ./webservice/
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
       - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
     ports:
       - "8000:8000"
