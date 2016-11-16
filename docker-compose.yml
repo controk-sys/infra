@@ -3,7 +3,6 @@ version: "2"
 services:
 
   db:
-    container_name: controk_db
     image: postgres:9.6.1
     environment:
       - POSTGRES_PASSWORD=controk_user_password
@@ -13,7 +12,6 @@ services:
       - "54321:5432"
 
   webservice:
-    container_name: controk_webservice
     build: ./webservice/
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
@@ -26,7 +24,6 @@ services:
 
 
   socket:
-    container_name: controk_socket
     build: ./socket/
     command: npm start
     environment:
@@ -38,7 +35,6 @@ services:
       - db
 
   frontend-web:
-    container_name: controk_frontend_web
     build: ./frontend-web/
     command: npm start
     ports:
