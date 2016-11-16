@@ -2,37 +2,58 @@ version: "2"
 
 services:
 
-  db:
-    image: postgres:9.6.1
+  db_master:
+    restart: always
+    image: sameersbn/postgresql:9.4-11
     environment:
-      - POSTGRES_PASSWORD=controk_user_password
-      - POSTGRES_USER=controk_user
-      - POSTGRES_DB=controk_db
+      - DEBUG=false
+      - DB_USER=controk_user
+      - DB_PASS=controk_user_password
+      - DB_NAME=controk_db
+      - DB_UNACCENT=false
+      - REPLICATION_MODE=master
+      - REPLICATION_USER=controk_replicator
+      - REPLICATION_PASS=controk_replicator_password
+      - REPLICATION_SSLMODE=
     ports:
       - "54321:5432"
+
+  db_slave:
+    restart: always
+    image: sameersbn/postgresql:9.4-11
+    links:
+      - db_master:master
+    environment:
+      - DEBUG=false
+      - REPLICATION_MODE=slave
+      - REPLICATION_HOST=master
+      - REPLICATION_USER=controk_replicator
+      - REPLICATION_PASS=controk_replicator_password
+    ports:
+      - "54322:5432"
 
   webservice:
     build: ./webservice/
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
       - ALLOWED_HOSTS=*
-      - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
+      - DATABASE_URL=postgres://controk_user:controk_user_password@db_master/controk_db
     ports:
       - "8000:8000"
     links:
-      - db
+      - db_master
 
 
   socket:
     build: ./socket/
     command: npm start
     environment:
-      - DATABASE_URL=postgres://controk_user:controk_user_password@db/controk_db
+      - DATABASE_URL=postgres://controk_user:controk_user_password@db_master/controk_db
       - PORT=8888
     ports:
       - "8888:8888"
     links:
-      - db
+      - db_master
 
   frontend-web:
     build: ./frontend-web/
