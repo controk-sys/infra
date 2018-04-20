@@ -32,8 +32,8 @@ services:
     ports:
       - "54322:5432"
 
-  webservice:
-    build: ./webservice/
+  http-server:
+    build: ./http-server/
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
       - ALLOWED_HOSTS=*
@@ -44,8 +44,8 @@ services:
       - db_master
 
 
-  socket:
-    build: ./socket/
+  websocket-server:
+    build: ./websocket-server/
     command: npm start
     environment:
       - DATABASE_URL=postgres://controk_user:controk_user_password@db_master/controk_db
