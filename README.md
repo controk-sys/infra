@@ -1,4 +1,4 @@
-# Controk Docker
+# Controk Infrastructure
 
 - [Frontend Web][frontend-web-link]
 - [Backend WebService][webservice-link]
@@ -31,7 +31,7 @@ You will have 5 containers, being (ordered by priority):
 
 Clone the project:
 
-`git clone https://github.com/jourdanrodrigues/controk-docker`
+`git clone https://github.com/controk-sys/infra .`
 
 Build the project with docker compose:
 
@@ -41,16 +41,12 @@ Raise the project:
 
 `docker-compose up`
 
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/jourdanrodrigues/controk-socket/tags). 
-
 ## Authors
 
 * **Jourdan Rodrigues** - *Initial work* - [Jourdan Rodrigues](https://github.com/jourdanrodrigues/)
 
 See also the list of [contributors][contributors] who participated in this project.
 
-[webservice-link]: http://github.com/jourdanrodrigues/controk-webservice
-[frontend-web-link]: http://github.com/jourdanrodrigues/controk-frontend-web
-[socket-link]: http://github.com/jourdanrodrigues/controk-socket
+[webservice-link]: http://github.com/controk-sys/http-server
+[frontend-web-link]: http://github.com/controk-sys/frontend-web
+[socket-link]: http://github.com/controk-sys/websocket-server
